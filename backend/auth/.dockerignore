@@ -1,0 +1,7 @@
+tests
+CHANGELOG.md
+README.md
+.idea
+.*-version
+*.env
+scripts
