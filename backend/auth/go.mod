@@ -6,7 +6,7 @@ require (
 	github.com/auth0/go-auth0 v1.4.0
 	github.com/labstack/echo-contrib v0.15.0
 	github.com/labstack/echo/v4 v4.11.4
-	github.com/ricardojonathanromero/order-products-vue-go/backend/utilities v0.0.0-20240128050051-829c3cbdebd0
+	github.com/ricardojonathanromero/order-products-vue-go/backend/utilities v0.0.0-20240128055041-4fa6f9951499
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.2
 )
@@ -26,7 +26,6 @@ require (
 	github.com/go-playground/validator/v10 v10.17.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect

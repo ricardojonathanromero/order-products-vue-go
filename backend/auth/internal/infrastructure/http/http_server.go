@@ -7,7 +7,6 @@ import (
 	_ "github.com/ricardojonathanromero/order-products-vue-go/backend/auth/docs"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/auth/pkg/app/handlers"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/auth/pkg/domain/constants"
-	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/logger"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/middlewares"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/transform"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/utils"
@@ -43,7 +42,7 @@ func useRateLimitMiddleware(e *echo.Echo) {
 	e.Use(middleware.RateLimiterWithConfig(middlewares.NewRateLimit(rateLimitConf)))
 }
 
-func NewServer(handles handlers.AuthHandler, log logger.Logger) (*echo.Echo, io.Closer) {
+func NewServer(handles handlers.AuthHandler) (*echo.Echo, io.Closer) {
 	var tracing io.Closer
 	e := echo.New()
 
@@ -51,8 +50,8 @@ func NewServer(handles handlers.AuthHandler, log logger.Logger) (*echo.Echo, io.
 	e.Validator = validator.NewValidator()
 
 	// configure middlewares
-	e.Use(middleware.RequestLoggerWithConfig(middlewares.NewCustomLogger(log))) // configure logger
-	e.Use(middlewares.NewRequestIdMiddleware())                                 // set request id header
+	e.Use(middleware.LoggerWithConfig(middlewares.NewCustomLogger())) // configure logger
+	e.Use(middlewares.NewRequestIdMiddleware())                       // set request id header
 	if apiKey := utils.GetEnv(constants.ServerApiKey, constants.Empty); len(apiKey) > 0 {
 		e.Use(middlewares.NewApiKey(apiKey))
 	}
