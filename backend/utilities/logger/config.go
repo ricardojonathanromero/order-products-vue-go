@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/ricardojonathanromero/orders-products-vue-go/backend/utilities/logger/formatter"
+	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/logger/formatter"
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
