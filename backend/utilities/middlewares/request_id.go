@@ -8,7 +8,7 @@ import (
 func NewRequestIdMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			c.Set(echo.HeaderXRequestID, uuid.NewString())
+			c.Request().Header.Set(echo.HeaderXRequestID, uuid.NewString())
 			return next(c)
 		}
 	}
