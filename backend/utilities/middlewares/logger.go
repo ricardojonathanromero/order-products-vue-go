@@ -3,7 +3,7 @@ package middlewares
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/ricardojonathanromero/orders-products-vue-go/backend/utilities/logger"
+	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/logger"
 	"time"
 )
 

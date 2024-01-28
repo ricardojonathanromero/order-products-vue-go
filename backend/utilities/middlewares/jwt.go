@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/ricardojonathanromero/orders-products-vue-go/backend/utilities/jwt"
+	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/jwt"
 	"net/http"
 	"strings"
 )
