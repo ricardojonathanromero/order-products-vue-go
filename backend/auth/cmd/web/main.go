@@ -56,7 +56,7 @@ func main() {
 	handles := handlers.New(srv, log)
 
 	// initialize server
-	server, jaegerTracer := http.NewServer(handles, log)
+	server, jaegerTracer := http.NewServer(handles)
 	if jaegerTracer != nil {
 		defer func(jaegerTracer io.Closer) {
 			err := jaegerTracer.Close()
