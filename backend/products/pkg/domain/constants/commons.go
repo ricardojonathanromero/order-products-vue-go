@@ -10,6 +10,7 @@ const (
 	Group             = "/products"
 	Zero              = "0"
 	Empty             = ""
+	Comma             = ","
 )
 
 const (
