@@ -1,0 +1,189 @@
+basePath: /v1/products
+definitions:
+  aggregates.ProductsAggregate:
+    properties:
+      pagination:
+        $ref: '#/definitions/valueobjects.Filters'
+      products:
+        items:
+          $ref: '#/definitions/entities.Product'
+        type: array
+    type: object
+  entities.Product:
+    properties:
+      categories:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      sku:
+        type: string
+    type: object
+  errors.CustomError:
+    properties:
+      code:
+        type: string
+      details:
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+    type: object
+  valueobjects.Filters:
+    properties:
+      filterBy:
+        example: catalog=soda
+        maxLength: 100
+        type: string
+      limit:
+        example: 10
+        maximum: 20
+        type: integer
+      offset:
+        example: 0
+        type: integer
+      sortBy:
+        example: -_id
+        maxLength: 100
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: ricardo.jonathan.romero@gmail.com
+    name: Ricardo Romero
+  description: This is the catalog of products API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Products API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: list all the products existing in the catalog
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: number of elements to return
+        in: query
+        name: limit
+        type: integer
+      - description: number of elements to skip
+        in: query
+        name: offset
+        type: integer
+      - description: field value used to filter. e.g. category=soda
+        in: query
+        name: filter_by
+        type: string
+      - description: indicates fields to sort by, by default id asc. e.g. -category,-_id
+        in: query
+        name: sort_by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/aggregates.ProductsAggregate'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "424":
+          description: Failed Dependency
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+      security:
+      - ApiKeyAuth: []
+      summary: List products
+      tags:
+      - catalogs
+  /{id}:
+    get:
+      consumes:
+      - application/json
+      description: return the product information filtering by product id
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: product ID
+        format: primitive.ObjectID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/aggregates.ProductsAggregate'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "424":
+          description: Failed Dependency
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.CustomError'
+      security:
+      - ApiKeyAuth: []
+      summary: Return product information
+      tags:
+      - catalogs
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-Api-Key
+    type: apiKey
+swagger: "2.0"
