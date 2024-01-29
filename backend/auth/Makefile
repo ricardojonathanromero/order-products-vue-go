@@ -4,14 +4,16 @@ lint-go: lint-install-go
 lint-install-go:
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-test-go:
-	@go test -v -parallel=5 ./...
+test-go: ginkgo-install-go
+	@ginkgo -r --show-node-events --fail-fast --randomize-all --randomize-suites --fail-on-pending --trace \
+		--junit-report=junit.xml --output-dir=tests -coverpkg=./... -coverprofile=cover.out
 
-cov-report:
-	@rm -rf reports
-	@mkdir reports
-	@go test -covermode=count -coverpkg=./... -coverprofile reports/cover.out -v ./...
-	@go tool cover -html reports/cover.out -o reports/cover.html
+ginkgo-install-go:
+	@go install github.com/onsi/ginkgo/v2/ginkgo
+
+cov-report: test-go
+	@go test -covermode=count -coverpkg=./... -coverprofile tests/cover.out -v ./...
+	@go tool cover -html tests/cover.out -o tests/cover.html
 
 build: doc
 	@rm -rf bin

@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"github.com/auth0/go-auth0/authentication"
 	"github.com/auth0/go-auth0/authentication/oauth"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/auth/pkg/domain/constants"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/auth/pkg/domain/entities"
+	cusErr "github.com/ricardojonathanromero/order-products-vue-go/backend/auth/pkg/domain/errors"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/logger"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/transform"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/utils"
@@ -53,7 +55,7 @@ func (s *authServiceImpl) Login(ctx context.Context, req *entities.LoginReq) (*e
 	session, err := s.client.OAuth.LoginWithPassword(ctx, body, opts)
 	if err != nil {
 		s.log.Errorf("error creating session in auth0: %v", err)
-		return nil, err
+		return nil, formatAuth0Err(cusErr.ErrInvalidCredentials, err)
 	}
 
 	s.log.Info("session generated!")
@@ -82,7 +84,7 @@ func (s *authServiceImpl) RenewSession(ctx context.Context, req *entities.Refres
 	session, err := s.client.OAuth.RefreshToken(ctx, body, opts)
 	if err != nil {
 		s.log.Errorf("error renewing session in auth0: %v", err)
-		return nil, err
+		return nil, formatAuth0Err(cusErr.ErrRefreshToken, err)
 	}
 
 	s.log.Info("session renewed!")
@@ -93,4 +95,15 @@ func (s *authServiceImpl) RenewSession(ctx context.Context, req *entities.Refres
 		Type:         session.TokenType,
 		ExpiresIn:    session.ExpiresIn,
 	}, nil
+}
+
+func formatAuth0Err(code cusErr.ErrCode, err error) error {
+	var auth0Err *authentication.Error
+	ok := errors.As(err, &auth0Err)
+
+	if !ok {
+		return cusErr.NewError(code, err)
+	}
+
+	return cusErr.NewError(code, auth0Err.Err, auth0Err.Message)
 }
