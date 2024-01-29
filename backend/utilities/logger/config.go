@@ -15,9 +15,10 @@ const (
 type Tag map[string]string
 
 type Opts struct {
-	LogLevel string
-	AppName  string
-	Tags     Tag
+	LogLevel  string
+	AppName   string
+	BlackList []string
+	Tags      Tag
 }
 
 func getLogLevel(lvl string) logrus.Level {
@@ -42,7 +43,7 @@ func New(opts Opts) Logger {
 
 	log.SetLevel(getLogLevel(opts.LogLevel))
 	log.SetOutput(os.Stdout)
-	log.SetFormatter(formatter.NewFormatter())
+	log.SetFormatter(formatter.NewFormatter(opts.BlackList...))
 
 	e := log.WithField(app, opts.AppName)
 
