@@ -11,6 +11,7 @@ import (
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/logger"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/utils"
 	"io"
+	"strings"
 )
 
 //	@title			Authentication API
@@ -35,8 +36,9 @@ import (
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
 	log := logger.New(logger.Opts{
-		LogLevel: utils.GetEnv(constants.LogLevel, constants.DefaultLogLevel),
-		AppName:  constants.AppName,
+		LogLevel:  utils.GetEnv(constants.LogLevel, constants.DefaultLogLevel),
+		BlackList: strings.Split(utils.GetEnv(constants.CustomBlackList, constants.Empty), constants.Comma),
+		AppName:   constants.AppName,
 	})
 
 	log.Debug("configuring auth client")
