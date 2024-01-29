@@ -3,11 +3,16 @@ package constants
 // Auth0 envs
 const (
 	Auth0Domain       = "AUTH0_DOMAIN"
-	Auth0ClientId     = "AUTH0_CLIENT_ID"
 	Auth0ClientSecret = "AUTH0_CLIENT_SECRET"
 	Auth0Audience     = "AUTH0_AUDIENCE"
-	Auth0Realm        = "AUTH0_REALM"
-	Auth0Scope        = "AUTH0_SCOPE"
+	Auth0Algorithm    = "AUTH0_ALGORITHM"
+)
+
+// mongodb envs
+const (
+	MongoDBUri        = "MONGODB_URI"
+	MongoDBName       = "MONGODB_NAME"
+	MongoDBCollection = "MONGODB_COLLECTION"
 )
 
 // server envs

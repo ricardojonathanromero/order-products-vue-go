@@ -7,12 +7,14 @@ import (
 	_ "github.com/ricardojonathanromero/order-products-vue-go/backend/products/docs"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/products/pkg/app/handlers"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/products/pkg/domain/constants"
+	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/jwt"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/middlewares"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/transform"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/utils"
 	"github.com/ricardojonathanromero/order-products-vue-go/backend/utilities/validator"
 	"github.com/swaggo/echo-swagger"
 	"io"
+	"net/http"
 	"time"
 )
 
@@ -42,7 +44,22 @@ func useRateLimitMiddleware(e *echo.Echo) {
 	e.Use(middleware.RateLimiterWithConfig(middlewares.NewRateLimit(rateLimitConf)))
 }
 
-func NewServer(_ handlers.ProductsHandler) (*echo.Echo, io.Closer) {
+func useAuth0JwtMiddleware() (echo.MiddlewareFunc, error) {
+	// env vars
+	domain := utils.GetEnv(constants.Auth0Domain, constants.Empty)
+	audience := utils.GetEnv(constants.Auth0Audience, constants.Empty)
+	clientSecret := utils.GetEnv(constants.Auth0ClientSecret, constants.Empty)
+	algorithm := utils.GetEnv(constants.Auth0Algorithm, constants.Empty)
+
+	v, err := jwt.NewAuth0JWTValidator(http.DefaultClient, domain, clientSecret, audience, algorithm, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return middlewares.NewAuth0ValidatorMiddleware(v), nil
+}
+
+func NewServer(_ handlers.ProductsHandler) (*echo.Echo, io.Closer, error) {
 	var tracing io.Closer
 	e := echo.New()
 
@@ -66,10 +83,15 @@ func NewServer(_ handlers.ProductsHandler) (*echo.Echo, io.Closer) {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	// routes
-	productsAPI := e.Group(constants.Version).Group(constants.Group)
+	jwtValidationMiddleware, err := useAuth0JwtMiddleware()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	productsAPI := e.Group(constants.Version).Group(constants.Group, jwtValidationMiddleware)
 
 	productsAPI.GET("", nil)            // retrieve all products using pagination
 	productsAPI.GET("/:productId", nil) // retrieve specific product using id
 
-	return e, tracing
+	return e, tracing, nil
 }
