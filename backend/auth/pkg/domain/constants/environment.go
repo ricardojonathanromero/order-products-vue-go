@@ -13,6 +13,7 @@ const (
 // server envs
 const (
 	LogLevel              = "LOG_LEVEL"
+	CustomBlackList       = "CUSTOM_BLACKLIST"
 	ServerPort            = "PORT"
 	ServerApiKey          = "SERVER_API_KEY"
 	ServerRateLimit       = "SERVER_RATE_LIMIT"

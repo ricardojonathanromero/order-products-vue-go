@@ -11,4 +11,5 @@ const (
 	Group             = "/auth"
 	Zero              = "0"
 	Empty             = ""
+	Comma             = ","
 )
