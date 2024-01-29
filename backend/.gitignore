@@ -1,5 +1,6 @@
 **/.idea
 go.work
+go.work.sum
 
 # ignore tests files
 **/tests/*.html
